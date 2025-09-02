@@ -28,22 +28,27 @@ export default class NewBill {
     formData.append("file", file);
     formData.append("email", email);
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true,
-        },
-      })
-      .then(({ fileUrl, key }) => {
-        console.log("fileUrl reçu:", fileUrl, "key:", key);
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
-      })
-      .catch((error) => console.error(error));
+    const regex = /\.(jpg|jpeg|png)$/i;
+
+    if (regex.test(fileName)) {
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true,
+          },
+        })
+        .then(({ fileUrl, key }) => {
+          console.log("fileUrl reçu:", fileUrl, "key:", key);
+          this.billId = key;
+          this.fileUrl = fileUrl;
+          this.fileName = fileName;
+        })
+        .catch((error) => console.error(error));
+    }
   };
+
   handleSubmit = (e) => {
     e.preventDefault();
     console.log(
