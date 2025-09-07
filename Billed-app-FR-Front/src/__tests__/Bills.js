@@ -45,18 +45,50 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono);
       expect(dates).toEqual(datesSorted);
     });
+
     // Test handleClickNewBill
+    describe("When I click on the NewBill button", () => {
+      test("Then it should navigate to the NewBill page", () => {
+        const mockOnNavigate = jest.fn();
+
+        new Bills({
+          document,
+          onNavigate: mockOnNavigate,
+          store: null,
+          localStorage: window.localStorage,
+        });
+
+        const newBillBtn = document.querySelector(".btn.btn-primary");
+        newBillBtn.click();
+
+        expect(mockOnNavigate).toHaveBeenCalledWith(ROUTES_PATH.NewBill);
+      });
+    });
+
     // Test handleClickIconEye
     describe("When I click on the eye icon", () => {
       test("Then the modal should open and display the correct image", () => {
         document.body.innerHTML = BillsUI({ data: bills });
-        const iconEyeDivs = screen.getAllByTestId("icon-eye");
-        iconEyeDivs[0].click();
 
-        const modal = document.querySelector("#modaleFile");
-        setTimeout(() => {
-          expect(modal.classList.contains("show")).toBe(true);
-        }, 1000);
+        const billsInstance = new Bills({
+          document,
+          onNavigate: jest.fn(),
+          store: null,
+          localStorage: window.localStorage,
+        });
+
+        $.fn.modal = jest.fn();
+
+        const iconEyeDivs = screen.getAllByTestId("icon-eye");
+        const firstIcon = iconEyeDivs[0];
+        firstIcon.click();
+
+        expect($.fn.modal).toHaveBeenCalledWith("show");
+
+        const img = document.querySelector(".modal-body img");
+        expect(img).toBeTruthy();
+        expect(img.src).toContain(firstIcon.getAttribute("data-bill-url"));
+        expect(img.alt).toBe("Bill");
       });
     });
   });
