@@ -91,5 +91,7 @@ describe("Given I am connected as an employee", () => {
         expect(img.alt).toBe("Bill");
       });
     });
+
+    // Test getBills
   });
 });
